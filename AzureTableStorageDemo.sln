@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33414.496
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureTableStorageDemo.WebApi", "AzureTableStorageDemo.WebApi\AzureTableStorageDemo.WebApi.csproj", "{06D1DF03-2A2F-4904-9AF3-74EE0D83B1FA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{17D6528D-070B-4DFD-A04D-D9F3A9C8B14A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureTableStorageDemo.WebApi.Tests", "AzureTableStorageDemo.WebApi.Tests\AzureTableStorageDemo.WebApi.Tests.csproj", "{39CE4051-1FD5-4930-94BF-62CE82589032}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{06D1DF03-2A2F-4904-9AF3-74EE0D83B1FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06D1DF03-2A2F-4904-9AF3-74EE0D83B1FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06D1DF03-2A2F-4904-9AF3-74EE0D83B1FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06D1DF03-2A2F-4904-9AF3-74EE0D83B1FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39CE4051-1FD5-4930-94BF-62CE82589032}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39CE4051-1FD5-4930-94BF-62CE82589032}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39CE4051-1FD5-4930-94BF-62CE82589032}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39CE4051-1FD5-4930-94BF-62CE82589032}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{39CE4051-1FD5-4930-94BF-62CE82589032} = {17D6528D-070B-4DFD-A04D-D9F3A9C8B14A}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FD8E7CB4-6B31-4796-B0FC-146C181944AC}
+	EndGlobalSection
+EndGlobal
