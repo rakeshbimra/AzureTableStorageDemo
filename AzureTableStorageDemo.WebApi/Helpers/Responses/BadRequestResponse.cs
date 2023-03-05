@@ -3,13 +3,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AzureTableStorageDemo.WebApi.Helpers.Response
 {
-    public class BadRequestResponse : ActionResult
+    public class BadRequestResponse : IActionResult
     {
         public int Status { get; set; } = StatusCodes.Status400BadRequest;
         public string Message { get; set; }
         public IDictionary<string, IEnumerable<string>> Errors { get; set; }
 
-        public override async Task ExecuteResultAsync(ActionContext context)
+        public async Task ExecuteResultAsync(ActionContext context)
         {
             var objectResult = new ObjectResult(new
             {

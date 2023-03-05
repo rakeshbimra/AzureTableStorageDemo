@@ -13,7 +13,8 @@ namespace AzureTableStorageDemo.WebApi.Helpers.Response
             var objectResult = new ObjectResult(new
             {
                 Status,
-                Message
+                Message,
+   
             })
             {
                 StatusCode = Status,

@@ -32,7 +32,7 @@ namespace AzureTableStorageDemo.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> Update([FromBody] MarketBandConfiguration marketBandConfiguration)
+        public async Task<IActionResult> Update([FromBody] MarketBandConfiguration marketBandConfiguration)
         {
             try
             {
@@ -82,7 +82,7 @@ namespace AzureTableStorageDemo.WebApi.Controllers
             {
                 _logger.LogError(ex, "An error occurred while processing the Update request.");
 
-                var errorResponse = new ErrorResponse
+                var errorResponse=  new ErrorResponse
                 {
                     Message = "An error occurred while processing the Update request."
                 };
