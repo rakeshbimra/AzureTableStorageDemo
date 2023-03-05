@@ -20,6 +20,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddMediatR(typeof(Program));
 
+builder.Services.AddLogging();
 builder.AddHelpers();
 builder.Services.AddCommands();
 
