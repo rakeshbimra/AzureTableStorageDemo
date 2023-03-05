@@ -1,6 +1,7 @@
 ﻿using AzureTableStorageDemo.WebApi.Commands;
 using AzureTableStorageDemo.WebApi.Helpers.AzureStorage.Entities;
 using AzureTableStorageDemo.WebApi.Helpers.AzureStorage.Entities.Validators;
+using AzureTableStorageDemo.WebApi.Helpers.Response;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,6 +21,8 @@ namespace AzureTableStorageDemo.WebApi.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> Update([FromBody] MarketBandConfiguration marketBandConfiguration)
         {
             _logger.LogInformation("{class} -> {method} -> Start", nameof(MarketBandConfigurationController), nameof(MarketBandConfigurationController.Update));
@@ -36,9 +39,17 @@ namespace AzureTableStorageDemo.WebApi.Controllers
             {
                 _logger.LogWarning("Validation failed for Update request. Errors: {errors}", validationResult.Errors);
 
+                var response = new BadRequestResponse
+                {
+                    Message = "Validation failed",
+                    Errors = validationResult.Errors
+                        .GroupBy(x => x.PropertyName, x => x.ErrorMessage)
+                        .ToDictionary(x => x.Key, x => x.AsEnumerable())
+                };
+
                 _logger.LogInformation("{class} -> {method} -> End", nameof(MarketBandConfigurationController), nameof(MarketBandConfigurationController.Update));
 
-                return BadRequest(validationResult.Errors);
+                return response;
             }
 
             await _mediator.Send(new UpdateMarketBandConfigurationCommand(marketBandConfiguration));
@@ -47,9 +58,14 @@ namespace AzureTableStorageDemo.WebApi.Controllers
                 marketBandConfiguration.PayerNumber,
                 marketBandConfiguration.MarketBandName);
 
+            var successResponse = new SuccessResponse
+            {
+                Message = "MarketBandConfiguration updated successfully",
+            };
+
             _logger.LogInformation("{class} -> {method} -> End", nameof(MarketBandConfigurationController), nameof(MarketBandConfigurationController.Update));
 
-            return StatusCode(201);
+            return successResponse;
         }
     }
 }

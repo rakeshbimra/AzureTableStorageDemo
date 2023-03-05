@@ -70,7 +70,8 @@ namespace AzureTableStorageDemo.WebApi.Helpers.AzureStorage
         {
             try
             {
-                Response response = await _client.AddEntityAsync(entity);
+                var response = await _client.AddEntityAsync(entity);
+
                 _logger.LogInformation($"Added entity with partition key '{entity.PartitionKey}' and row key '{entity.RowKey}' to table '{typeof(T).Name}'.");
                 return entity;
             }
@@ -85,7 +86,7 @@ namespace AzureTableStorageDemo.WebApi.Helpers.AzureStorage
         {
             try
             {
-                Response response = await _client.UpdateEntityAsync(entity, entity.ETag, TableUpdateMode.Replace);
+                var response = await _client.UpdateEntityAsync(entity, entity.ETag, TableUpdateMode.Replace);
                 _logger.LogInformation($"Updated entity with partition key '{entity.PartitionKey}' and row key '{entity.RowKey}'.");
                 return entity;
             }
