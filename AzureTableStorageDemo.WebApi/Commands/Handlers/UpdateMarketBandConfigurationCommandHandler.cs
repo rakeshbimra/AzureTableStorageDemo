@@ -26,6 +26,9 @@ namespace AzureTableStorageDemo.WebApi.Commands.Handlers
         /// Handles the UpdateMarketBandConfigurationCommand request by updating an existing market band configuration 
         /// or adding a new one to the table storage.
         /// </summary>
+        /// <param name="request">Market band configuration command</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <returns></returns>
         public async Task<Unit> Handle(UpdateMarketBandConfigurationCommand request, 
             CancellationToken cancellationToken)
         {
