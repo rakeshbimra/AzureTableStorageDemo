@@ -5,7 +5,6 @@ using AzureTableStorageDemo.WebApi.Commands.IoC;
 using AzureTableStorageDemo.WebApi.Helpers.IoC;
 using AzureTableStorageDemo.WebApi.Helpers.Extensions;
 
-using FluentAssertions.Common;
 using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);

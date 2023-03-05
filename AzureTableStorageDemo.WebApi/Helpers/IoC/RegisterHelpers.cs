@@ -3,7 +3,6 @@ using AzureTableStorageDemo.WebApi.Helpers.AzureStorage.Entities;
 using AzureTableStorageDemo.WebApi.Helpers.Configurations;
 using AzureTableStorageDemo.WebApi.Helpers.Configurations.Validators;
 using AzureTableStorageDemo.WebApi.Helpers.Extensions;
-using FluentAssertions.Common;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
 

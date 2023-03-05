@@ -1,5 +1,6 @@
 ﻿using Azure;
 using Azure.Data.Tables;
+using System.Linq;
 
 namespace AzureTableStorageDemo.WebApi.Helpers.AzureStorage
 {
@@ -46,6 +47,8 @@ namespace AzureTableStorageDemo.WebApi.Helpers.AzureStorage
             return results;
         }
 
+
+
         public async Task<T> GetAsync(string partitionKey, string rowKey)
         {
             try
@@ -66,6 +69,24 @@ namespace AzureTableStorageDemo.WebApi.Helpers.AzureStorage
             }
         }
 
+        public async Task<IEnumerable<T>> GetItemsAsync(string filter)
+        {
+            var results = new List<T>();
+
+            // Execute the query
+            var queryResults = _client.QueryAsync<T>(filter: filter);
+
+            // Enumerate the query results and add them to the list
+            await foreach (T entity in queryResults)
+            {
+                results.Add(entity);
+            }
+
+            _logger.LogInformation($"Retrieved {results.Count} entities from table '{typeof(T).Name}' with filter '{filter}'.");
+
+            return results;
+        }
+
         public async Task<T> AddAsync(T entity)
         {
             try
@@ -81,6 +102,28 @@ namespace AzureTableStorageDemo.WebApi.Helpers.AzureStorage
                 throw new Exception($"Failed to add entity. Error: {ex.Message}", ex);
             }
         }
+
+        public async Task<IEnumerable<T>> AddItemsAsync(IEnumerable<T> entities)
+        {
+            var results = new List<T>();
+            foreach (var entity in entities)
+            {
+                try
+                {
+                    var response = await _client.AddEntityAsync(entity);
+
+                    _logger.LogInformation($"Added entity with partition key '{entity.PartitionKey}' and row key '{entity.RowKey}' to table '{typeof(T).Name}'.");
+                    results.Add(entity);
+                }
+                catch (RequestFailedException ex)
+                {
+                    _logger.LogError(ex, $"Failed to add entity to table '{typeof(T).Name}'.");
+                    throw new Exception($"Failed to add entity. Error: {ex.Message}", ex);
+                }
+            }
+            return results;
+        }
+
 
         public async Task<T> UpdateAsync(T entity)
         {
@@ -110,5 +153,23 @@ namespace AzureTableStorageDemo.WebApi.Helpers.AzureStorage
                 throw new Exception($"Failed to delete entity with partition key '{partitionKey}' and row key '{rowKey}'. Error: {ex.Message}", ex);
             }
         }
+
+        public async Task DeleteItemsAsync(IEnumerable<T> entities)
+        {
+            foreach (var entity in entities)
+            {
+                try
+                {
+                    await _client.DeleteEntityAsync(entity.PartitionKey, entity.RowKey);
+                    _logger.LogInformation($"Deleted entity with partition key '{entity.PartitionKey}' and row key '{entity.RowKey}' from table '{typeof(T).Name}'.");
+                }
+                catch (RequestFailedException ex)
+                {
+                    _logger.LogError(ex, $"Failed to delete entity with partition key '{entity.PartitionKey}' and row key '{entity.RowKey}' from table '{typeof(T).Name}'. Error: {ex.Message}");
+                    throw new Exception($"Failed to delete entity with partition key '{entity.PartitionKey}' and row key '{entity.RowKey}'. Error: {ex.Message}", ex);
+                }
+            }
+        }
+
     }
 }

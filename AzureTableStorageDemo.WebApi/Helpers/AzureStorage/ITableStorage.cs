@@ -6,9 +6,12 @@ namespace AzureTableStorageDemo.WebApi.Helpers.AzureStorage
     {
         Task CreateTableIfNotExistsAsync();
         Task<IEnumerable<T>> GetAllAsync();
+        Task<IEnumerable<T>> GetItemsAsync(string filter);
         Task<T> GetAsync(string partitionKey, string rowKey);
         Task<T> AddAsync(T entity);
+        Task<IEnumerable<T>> AddItemsAsync(IEnumerable<T> entities);
         Task<T> UpdateAsync(T entity);
         Task DeleteAsync(string partitionKey, string rowKey);
+        Task DeleteItemsAsync(IEnumerable<T> entities);
     }
 }
