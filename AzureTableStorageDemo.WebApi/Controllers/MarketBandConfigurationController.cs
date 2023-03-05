@@ -2,6 +2,7 @@
 using AzureTableStorageDemo.WebApi.Helpers.AzureStorage.Entities;
 using AzureTableStorageDemo.WebApi.Helpers.AzureStorage.Entities.Validators;
 using AzureTableStorageDemo.WebApi.Helpers.Response;
+using AzureTableStorageDemo.WebApi.Helpers.Responses;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,52 +21,74 @@ namespace AzureTableStorageDemo.WebApi.Controllers
             _logger = logger;
         }
 
+        /// <summary>
+        /// Updates the given <paramref name="marketBandConfiguration"/> object.
+        /// </summary>
+        /// <param name="marketBandConfiguration">The market band configuration object to be updated.</param>
+        /// <returns>Returns a 201 Created response if the object was updated successfully, 
+        /// a 400 Bad Request response if the request payload is invalid or 
+        /// a 500 Internal Server Error response if an error occurred during processing.</returns>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult> Update([FromBody] MarketBandConfiguration marketBandConfiguration)
         {
-            _logger.LogInformation("{class} -> {method} -> Start", nameof(MarketBandConfigurationController), nameof(MarketBandConfigurationController.Update));
-
-            _logger.LogInformation("Processing Update request. PayerNumber: {payerNumber}, MarketBandName: {marketBandName}",
-                marketBandConfiguration.PayerNumber,
-                marketBandConfiguration.MarketBandName);
-
-            var validator = new MarketBandConfigurationValidator();
-
-            var validationResult = validator.Validate(marketBandConfiguration);
-
-            if (!validationResult.IsValid)
+            try
             {
-                _logger.LogWarning("Validation failed for Update request. Errors: {errors}", validationResult.Errors);
+                _logger.LogInformation("{class} -> {method} -> Start", nameof(MarketBandConfigurationController), nameof(MarketBandConfigurationController.Update));
 
-                var response = new BadRequestResponse
+                _logger.LogInformation("Processing Update request. PayerNumber: {payerNumber}, MarketBandName: {marketBandName}",
+                    marketBandConfiguration.PayerNumber,
+                    marketBandConfiguration.MarketBandName);
+
+                var validator = new MarketBandConfigurationValidator();
+
+                var validationResult = validator.Validate(marketBandConfiguration);
+
+                if (!validationResult.IsValid)
                 {
-                    Message = "Validation failed",
-                    Errors = validationResult.Errors
-                        .GroupBy(x => x.PropertyName, x => x.ErrorMessage)
-                        .ToDictionary(x => x.Key, x => x.AsEnumerable())
+                    _logger.LogWarning("Validation failed for Update request. Errors: {errors}", validationResult.Errors);
+
+                    var response = new BadRequestResponse
+                    {
+                        Message = "Validation failed",
+                        Errors = validationResult.Errors
+                            .GroupBy(x => x.PropertyName, x => x.ErrorMessage)
+                            .ToDictionary(x => x.Key, x => x.AsEnumerable())
+                    };
+
+                    _logger.LogInformation("{class} -> {method} -> End", nameof(MarketBandConfigurationController), nameof(MarketBandConfigurationController.Update));
+
+                    return response;
+                }
+
+                await _mediator.Send(new UpdateMarketBandConfigurationCommand(marketBandConfiguration));
+
+                _logger.LogInformation("Update request processed successfully. PayerNumber: {payerNumber}, MarketBandName: {marketBandName}",
+                    marketBandConfiguration.PayerNumber,
+                    marketBandConfiguration.MarketBandName);
+
+                var successResponse = new SuccessResponse
+                {
+                    Message = "MarketBandConfiguration updated successfully",
                 };
 
                 _logger.LogInformation("{class} -> {method} -> End", nameof(MarketBandConfigurationController), nameof(MarketBandConfigurationController.Update));
 
-                return response;
+                return successResponse;
             }
-
-            await _mediator.Send(new UpdateMarketBandConfigurationCommand(marketBandConfiguration));
-
-            _logger.LogInformation("Update request processed successfully. PayerNumber: {payerNumber}, MarketBandName: {marketBandName}",
-                marketBandConfiguration.PayerNumber,
-                marketBandConfiguration.MarketBandName);
-
-            var successResponse = new SuccessResponse
+            catch (Exception ex)
             {
-                Message = "MarketBandConfiguration updated successfully",
-            };
+                _logger.LogError(ex, "An error occurred while processing the Update request.");
 
-            _logger.LogInformation("{class} -> {method} -> End", nameof(MarketBandConfigurationController), nameof(MarketBandConfigurationController.Update));
+                var errorResponse = new ErrorResponse
+                {
+                    Message = "An error occurred while processing the Update request."
+                };
 
-            return successResponse;
+                return errorResponse;
+            }
         }
     }
 }

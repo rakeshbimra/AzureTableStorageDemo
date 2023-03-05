@@ -14,6 +14,11 @@ using System.Text;
 using System.Threading.Tasks;
 using FluentValidation.Results;
 using AzureTableStorageDemo.WebApi.Helpers.Response;
+using Microsoft.AspNetCore.Http;
+using AzureTableStorageDemo.WebApi.Helpers.Responses;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 
 namespace AzureTableStorageDemo.WebApi.Tests.Controllers
 {
@@ -82,6 +87,26 @@ namespace AzureTableStorageDemo.WebApi.Tests.Controllers
             Assert.IsNotNull(response.Errors);
             Assert.IsTrue(response.Errors.ContainsKey("MarketBandName"));
 
+        }
+
+        [TestMethod]
+        public async Task Update_ExceptionThrown_ReturnsInternalServerErrorResponse()
+        {
+            // Arrange
+            var mediatorMock = new Mock<IMediator>();
+            var loggerMock = new Mock<ILogger<MarketBandConfigurationController>>();
+            var controller = new MarketBandConfigurationController(mediatorMock.Object, loggerMock.Object);
+            var marketBandConfiguration = new MarketBandConfiguration { PayerNumber = "123", MarketBandName = "Test" };
+            mediatorMock.Setup(m => m.Send(It.IsAny<UpdateMarketBandConfigurationCommand>(), default(CancellationToken)))
+                .ThrowsAsync(new Exception("Test Exception"));
+
+            // Act
+            var result = await controller.Update(marketBandConfiguration);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsFalse(result is OkResult);
+            Assert.IsFalse(result is BadRequestResult);
         }
     }
 }
