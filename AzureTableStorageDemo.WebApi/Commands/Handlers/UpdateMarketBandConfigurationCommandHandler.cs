@@ -9,13 +9,25 @@ namespace AzureTableStorageDemo.WebApi.Commands.Handlers
         private readonly ILogger<UpdateMarketBandConfigurationCommandHandler> _logger;
         private readonly ITableStorage<MarketBandConfiguration> _tableStorage;
 
-        public UpdateMarketBandConfigurationCommandHandler(ITableStorage<MarketBandConfiguration> tableStorage, ILogger<UpdateMarketBandConfigurationCommandHandler> logger)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UpdateMarketBandConfigurationCommandHandler"/> class.
+        /// </summary>
+        /// <param name="tableStorage">The table storage.</param>
+        /// <param name="logger">The logger.</param>
+        public UpdateMarketBandConfigurationCommandHandler(
+            ITableStorage<MarketBandConfiguration> tableStorage, 
+            ILogger<UpdateMarketBandConfigurationCommandHandler> logger)
         {
             _tableStorage = tableStorage;
             _logger = logger;
         }
 
-        public async Task<Unit> Handle(UpdateMarketBandConfigurationCommand request, CancellationToken cancellationToken)
+        /// <summary>
+        /// Handles the UpdateMarketBandConfigurationCommand request by updating an existing market band configuration 
+        /// or adding a new one to the table storage.
+        /// </summary>
+        public async Task<Unit> Handle(UpdateMarketBandConfigurationCommand request, 
+            CancellationToken cancellationToken)
         {
             _logger.LogInformation("{class} -> {method}-> Start", nameof(UpdateMarketBandConfigurationCommandHandler), nameof(UpdateMarketBandConfigurationCommandHandler.Handle));
 
