@@ -13,6 +13,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FluentValidation.Results;
+using AzureTableStorageDemo.WebApi.Helpers.Response;
 
 namespace AzureTableStorageDemo.WebApi.Tests.Controllers
 {
@@ -44,8 +45,6 @@ namespace AzureTableStorageDemo.WebApi.Tests.Controllers
                 RowKey = "TestMarketBand"
             };
 
-            var expectedResult = new StatusCodeResult(201);
-
             _mockMediator
                 .Setup(x => x.Send(It.IsAny<UpdateMarketBandConfigurationCommand>(), default))
                 .Returns(Task.CompletedTask);
@@ -54,7 +53,10 @@ namespace AzureTableStorageDemo.WebApi.Tests.Controllers
             var result = await _controller.Update(marketBandConfiguration);
 
             // Assert
-            result.Should().BeEquivalentTo(expectedResult);
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(SuccessResponse));
+            var response = result as SuccessResponse;
+            Assert.AreEqual("MarketBandConfiguration updated successfully", response.Message);
         }
 
         [TestMethod]
@@ -74,8 +76,12 @@ namespace AzureTableStorageDemo.WebApi.Tests.Controllers
             var result = await _controller.Update(marketBandConfiguration);
 
             // Assert
-            result.Should().BeOfType<BadRequestObjectResult>();
-           
+            Assert.IsInstanceOfType(result, typeof(BadRequestResponse));
+            var response = result as BadRequestResponse;
+            Assert.AreEqual("Validation failed", response.Message);
+            Assert.IsNotNull(response.Errors);
+            Assert.IsTrue(response.Errors.ContainsKey("MarketBandName"));
+
         }
     }
 }
